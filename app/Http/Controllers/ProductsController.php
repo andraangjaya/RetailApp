@@ -14,6 +14,7 @@ class ProductsController extends Controller
         $validated = $request->validate([
             'product_name' => 'required|string|max:255',
             'product_price' => 'required|numeric:',
+            'product_stock' => 'required|numeric:'
         ]);
 
         $product = Product::create($validated);
@@ -45,6 +46,18 @@ class ProductsController extends Controller
         return response()->json([
             'message' => 'Product updated successfully',
         ], 200);
+    }
+
+    public function updateProductStock(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $validated = $request->validate([
+            'product_stock' => 'required',
+        ]);
+        $product->update($validated);
+        return response()->json([
+            'message' => 'Stock updated successfully',
+        ], 201);
     }
 
     public function deleteProduct($id)
