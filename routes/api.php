@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/products', [ProductsController::class, 'createProduct']);
@@ -10,4 +11,4 @@ Route::put('/products/{id}', [ProductsController::class, 'updateProduct']);
 Route::put('/products/{id}/stock', [ProductsController::class, 'updateProductStock']);
 Route::delete('/products/{id}', [ProductsController::class, 'deleteProduct']);
 
-
+Route::post('/orders', [SalesController::class, 'createOrder']);
