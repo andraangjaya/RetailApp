@@ -1,14 +1,21 @@
 <?php
 
 use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\SalesController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\ReceiptsController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/products', [ProductsController::class, 'createProduct']);
-Route::get('/products', [ProductsController::class, 'getAllProducts']);
-Route::get('/products/{id}', [ProductsController::class, 'getProduct']);
-Route::put('/products/{id}', [ProductsController::class, 'updateProduct']);
-Route::put('/products/{id}/stock', [ProductsController::class, 'updateProductStock']);
-Route::delete('/products/{id}', [ProductsController::class, 'deleteProduct']);
+Route::prefix('products')->group(function () {
+    Route::post('/', [ProductsController::class, 'store'])->name('products.store');
+    Route::get('/', [ProductsController::class, 'index'])->name('products.index');
+    Route::get('{product}', [ProductsController::class, 'show'])->name('products.show');
+    Route::put('{product}', [ProductsController::class, 'update'])->name('products.update');
+    Route::put('{product}/stock', [ProductsController::class, 'updateStock'])->name('products.updateStock');
+    Route::delete('{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
+});
 
-Route::post('/orders', [SalesController::class, 'createOrder']);
+Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
+Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+
+Route::post('/receipts/create', [ReceiptsController::class, 'store'])->name('receipts.store');
+Route::get('/receipts', [ReceiptsController::class, 'index'])->name('receipts.index');

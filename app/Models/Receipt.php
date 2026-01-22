@@ -5,16 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Receipt extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'product_name',
-        'product_price',
-        'product_stock'
+        'receipt_number',
+        'grand_total'
     ];
 
-    public function order(){
+    public static function generateNumber()
+    {
+        return date('Y') . rand(1, 100);
+    }
+
+    public function orders(){
         return $this->hasMany(Order::class);
     }
 }

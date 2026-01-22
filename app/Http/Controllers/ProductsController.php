@@ -9,12 +9,12 @@ use Illuminate\Routing\Controller;
 class ProductsController extends Controller
 {
     //
-    public function createProduct(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'product_name' => 'required|string|max:255',
-            'product_price' => 'required|numeric:',
-            'product_stock' => 'required|numeric:'
+            'product_price' => 'required|numeric:|min:0',
+            'product_stock' => 'required|numeric:|min:0',
         ]);
 
         $product = Product::create($validated);
@@ -25,19 +25,18 @@ class ProductsController extends Controller
         ], 201);
     }
 
-    public function getAllProducts()
+    public function index()
     {
         return Product::all();
     }
 
-    public function getProduct($id)
+    public function show(Product $product)
     {
-        return Product::findOrFail($id);
+        return $product;
     }
 
-    public function updateProduct(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
         $validated = $request->validate([
             'product_name' => 'required',
             'product_price' => 'required',
@@ -48,9 +47,8 @@ class ProductsController extends Controller
         ], 200);
     }
 
-    public function updateProductStock(Request $request, $id)
+    public function updateStock(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
         $validated = $request->validate([
             'product_stock' => 'required',
         ]);
@@ -60,8 +58,8 @@ class ProductsController extends Controller
         ], 201);
     }
 
-    public function deleteProduct($id)
+    public function destroy(Product $product)
     {
-        Product::findOrFail($id)->delete();
+        return $product->delete();
     }
 }

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sale;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class SalesController extends Controller
+class OrdersController extends Controller
 {
-    public function createOrder(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
@@ -22,11 +22,16 @@ class SalesController extends Controller
             ], 422);
         }
 
-        $order = Sale::create($validator->validated());
+        $order = Order::create($validator->validated());
 
         return response()->json([
-            'message' => 'Sale created',
+            'message' => 'Order created',
             'order' => $order
         ], 201);
+    }
+
+    public function index()
+    {
+        return Order::all();
     }
 }

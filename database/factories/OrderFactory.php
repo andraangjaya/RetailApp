@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Sale;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SaleFactory extends Factory
+class OrderFactory extends Factory
 {
-    protected $model = Sale::class;
+    protected $model = Order::class;
 
     public function definition(): array
     {
