@@ -53,5 +53,4 @@ class Order extends Model
     public function receipt(){
         return $this->belongsTo(Receipt::class);
     }
-
 }

@@ -23,8 +23,21 @@ class ReceiptsController extends Controller
             ], 422);
         }
 
-        DB::transaction(function () use ($validator) {
-            $orders = Order::whereIn('id', $validator->validated()['orders'])
+        $orderIds = $validator->validated()['orders'];
+
+        $usedOrder = Order::whereIn('id', $orderIds)
+            ->whereNotNull('receipt_id')
+            ->pluck('id');
+
+        if($usedOrder->isNotEmpty()) {
+            return response()->json([
+                'error' => 'order already have receipt',
+                'used_order_id' => $usedOrder
+            ], 409);
+        }
+
+        DB::transaction(function () use ($orderIds) {
+            $orders = Order::whereIn('id', $orderIds)
                 ->whereNull('receipt_id')
                 ->get();
 
@@ -44,10 +57,8 @@ class ReceiptsController extends Controller
         ],201);
     }
 
-
     public function index(){
         $receipts = Receipt::with('orders')->get();
         return response()->json([$receipts]);
     }
-
 }
