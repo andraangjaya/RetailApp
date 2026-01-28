@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class OrdersController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, OrderService $orderService)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
@@ -22,7 +23,7 @@ class OrdersController extends Controller
             ], 422);
         }
 
-        $order = Order::create($validator->validated());
+        $order = $orderService->create($validator->validated());
 
         return response()->json([
             'message' => 'Order created',
