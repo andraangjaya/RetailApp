@@ -29,7 +29,7 @@ class ReceiptsController extends Controller
             ->whereNotNull('receipt_id')
             ->pluck('id');
 
-        if($usedOrder->isNotEmpty()) {
+        if ($usedOrder->isNotEmpty()) {
             return response()->json([
                 'error' => 'order already have receipt',
                 'used_order_id' => $usedOrder
@@ -49,15 +49,16 @@ class ReceiptsController extends Controller
             ]);
 
             Order::whereIn('id', $orders->pluck('id'))
-                ->update(['receipt_id'=> $receipt->id]);
+                ->update(['receipt_id' => $receipt->id]);
         });
 
         return response()->json([
             'message' => 'Receipt created successfully'
-        ],201);
+        ], 201);
     }
 
-    public function index(){
+    public function index()
+    {
         $receipts = Receipt::with('orders')->get();
         return response()->json([$receipts]);
     }
