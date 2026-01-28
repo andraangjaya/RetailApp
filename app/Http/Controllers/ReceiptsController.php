@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Receipt;
+use App\Services\ReceiptService;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class ReceiptsController extends Controller
 {
-    public function store()
+    public function store(ReceiptService $receiptService)
     {
         $validator = Validator::make(request()->all(), [
             'orders' => 'required|array|min:1',
@@ -23,38 +25,21 @@ class ReceiptsController extends Controller
             ], 422);
         }
 
-        $orderIds = $validator->validated()['orders'];
+        $validated = $validator->validated();
 
-        $usedOrder = Order::whereIn('id', $orderIds)
-            ->whereNotNull('receipt_id')
-            ->pluck('id');
+        try {
+            $receipt = $receiptService->create($validated['orders']);
 
-        if ($usedOrder->isNotEmpty()) {
             return response()->json([
-                'error' => 'order already have receipt',
-                'used_order_id' => $usedOrder
+                'message' => 'Receipt Successfully Created',
+                'receipt' => $receipt->load('orders')
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
             ], 409);
         }
-
-        DB::transaction(function () use ($orderIds) {
-            $orders = Order::whereIn('id', $orderIds)
-                ->whereNull('receipt_id')
-                ->get();
-
-            $grandTotal = $orders->sum('total');
-
-            $receipt = Receipt::create([
-                'receipt_number' => Receipt::generateNumber(),
-                'grand_total' => $grandTotal
-            ]);
-
-            Order::whereIn('id', $orders->pluck('id'))
-                ->update(['receipt_id' => $receipt->id]);
-        });
-
-        return response()->json([
-            'message' => 'Receipt created successfully'
-        ], 201);
     }
 
     public function index()
