@@ -14,18 +14,10 @@ class ReceiptsController extends Controller
 {
     public function store(ReceiptService $receiptService)
     {
-        $validator = Validator::make(request()->all(), [
+        $validated = request()->validate([
             'orders' => 'required|array|min:1',
             'orders.*' => 'integer|exists:orders,id'
         ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()
-            ], 422);
-        }
-
-        $validated = $validator->validated();
 
         try {
             $receipt = $receiptService->create($validated['orders']);

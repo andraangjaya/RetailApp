@@ -19,7 +19,11 @@ class Receipt extends Model
         return date('Y') . rand(1, 100);
     }
 
-    public function orders(){
+    public function order(){
         return $this->hasMany(Order::class);
+    }
+
+    public function customer(){
+        return $this->belongsTo(Customer::class);
     }
 }

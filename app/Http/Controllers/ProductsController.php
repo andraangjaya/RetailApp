@@ -48,7 +48,7 @@ class ProductsController extends Controller
         return response()->json([
             'message' => 'Product updated successfully',
             'updated_product' => $product
-        ], 200);
+        ], 201);
     }
 
     public function updateStock(Request $request, Product $product, ProductService $productService)

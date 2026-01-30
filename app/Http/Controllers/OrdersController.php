@@ -12,18 +12,12 @@ class OrdersController extends Controller
 {
     public function store(Request $request, OrderService $orderService)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $order = $orderService->create($validator->validated());
+        $order = $orderService->create($validated);
 
         return response()->json([
             'message' => 'Order created',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ReceiptsController;
@@ -14,8 +15,21 @@ Route::prefix('products')->group(function () {
     Route::delete('{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
 });
 
-Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
-Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+Route::prefix('orders')->group(function(){
+    Route::post('/', [OrdersController::class, 'store'])->name('orders.store');
+    Route::get('/', [OrdersController::class, 'index'])->name('orders.index');
+});
 
-Route::post('/receipts/create', [ReceiptsController::class, 'store'])->name('receipts.store');
-Route::get('/receipts', [ReceiptsController::class, 'index'])->name('receipts.index');
+Route::prefix('receipts')->group(function(){
+    Route::post('/create', [ReceiptsController::class, 'store'])->name('receipts.store');
+    Route::get('/', [ReceiptsController::class, 'index'])->name('receipts.index');
+});
+
+Route::prefix('customers')->group(function(){
+    Route::post('/', [CustomersController::class, 'store'])->name('customers.store');
+    Route::get('/', [CustomersController::class, 'index'])->name('customers.index');
+    Route::get('{customer}', [CustomersController::class, 'show'])->name('customers.show');
+    Route::put('{customer}', [CustomersController::class, 'update'])->name('customers.update');
+    Route::delete('{customer}', [CustomersController::class, 'destroy'])->name('customers.destroy');
+});
+
